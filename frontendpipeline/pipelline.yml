@@ -1,0 +1,40 @@
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: 'angulervariablegrp' # Replace with your actual variable group name
+
+stages:
+  # Stage 1: Build and Push Docker Image
+  - stage: Build
+    displayName: 'Build and Push Docker Image'
+    jobs:
+      - job: BuildAndPushDockerImage
+        displayName: 'Build and Push Docker Image'
+        steps:
+          # Build and Push Docker Image
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'kkpawangupta'
+              repository: 'webbappcontainer'
+              command: 'buildAndPush'
+              Dockerfile: '**/Dockerfile'
+              tags: $(Build.BuildId),latest
+
+
+  # # Stage 2: Deploy Docker Image to Azure Web App
+  # - stage: Deploy
+  #   displayName: 'Deploy Dockerized Web App'
+  #   dependsOn: Build
+  #   jobs:
+  #     - job: DeployWebApp
+  #       displayName: 'Deploy Web App'
+  #       steps:
+  #         # Deploy Docker Container to Azure Web App
+  #         - task: AzureWebAppContainer@1
+  #           inputs:
+  #             azureSubscription: 'pawan-servic-ltim'
+  #             appName: 'azure-vm-machince'
+  #             containers: 'toaddoappbackendvm'
